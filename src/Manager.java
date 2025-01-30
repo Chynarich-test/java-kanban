@@ -118,7 +118,8 @@ public final class Manager {
         for (Subtask subtask : epicSubtasks){
             if(subtask.getStatus() != Status.DONE){
                 allEqualsDone = false;
-            } else if(subtask.getStatus() != Status.NEW){
+            }
+            if(subtask.getStatus() != Status.NEW){
                 allEqualsNew = false;
             }
         }
