@@ -1,19 +1,25 @@
-package Tasks;
+package tasks;
 
-import java.util.ArrayList;
 import java.util.Objects;
 
 public class Task {
-    private final String name;
-    private final String description;
-    private final double ID;
+    private String name;
+    private String description;
+    private long ID;
     private Status status;
 
-    public Task(String name, String description, double ID, String status){
+    public Task(String name, String description, long ID, String status){
         this.name = name;
         this.description = description;
         this.ID = ID;
         this.status = Status.valueOf(status);
+    }
+
+    public Task(String name, String description, long ID, Status status){
+        this.name = name;
+        this.description = description;
+        this.ID = ID;
+        this.status = status;
     }
 
     public Task(Task task){
@@ -23,7 +29,13 @@ public class Task {
         this.status = task.status;
     }
 
-    public double getID() {
+    public Task(String name, String description, Status status){
+        this.name = name;
+        this.description = description;
+        this.status = status;
+    }
+
+    public long getID() {
         return ID;
     }
 
@@ -54,5 +66,21 @@ public class Task {
 
     public Status getStatus() {
         return status;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
