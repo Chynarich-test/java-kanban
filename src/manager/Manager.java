@@ -3,17 +3,21 @@ package manager;
 import tasks.Epic;
 import tasks.Status;
 import tasks.Subtask;
+import tasks.Task;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public final class Manager {
     private static long maxID = 0;
-    //Не вижу смысла создавать третий объект с тасками, потому что только эти два объекта полностью удовлетворяют
-    //условиям, если нужна задача без подзадач то это будет эпик с пустыми сабтасками.
-    //Если понадобится в будущих заданиях использовать голый объект таска, то уже там добавлю.
+    private final HashMap<Long, Task> tasks = new HashMap<>();
     private final HashMap<Long, Epic> epics = new HashMap<>();
     private final HashMap<Long ,Subtask> subtasks = new HashMap<>();
+
+    public void addTask(Task task) {
+        long taskID = generateID();
+        tasks.put(taskID, new Task(task, taskID));
+    }
 
     public void addEpic(Epic epic) {
         long epicID = generateID();
@@ -32,12 +36,20 @@ public final class Manager {
         checkStatus(epic);
     }
 
+    public ArrayList<Task> getTasks() {
+        return new ArrayList<>(tasks.values());
+    }
+
     public ArrayList<Epic> getEpics() {
         return new ArrayList<>(epics.values());
     }
 
     public ArrayList<Subtask> getSubtasks(){
         return new ArrayList<>(subtasks.values());
+    }
+
+    public void deleteAllTasks() {
+        tasks.clear();
     }
 
     public void deleteAllEpics() {
@@ -54,12 +66,23 @@ public final class Manager {
     }
 
     //Сделал 3 метода когда пользователь знает что он хочет вернуть и когда не знает какой группе, принадлежит его айди
-    public Object getTaskAnID(long ID) {
+    public Object getObjectAnID(long ID) {
+        if(tasks.containsKey(ID)){
+            return tasks.get(ID);
+        }
         if(epics.containsKey(ID)){
             return epics.get(ID);
         }
         if(subtasks.containsKey(ID)){
             return subtasks.get(ID);
+        }
+        System.out.println("Объект не найден");
+        return null;
+    }
+
+    public Task getTaskAnID(long ID) {
+        if(tasks.containsKey(ID)){
+            return tasks.get(ID);
         }
         System.out.println("Объект не найден");
         return null;
@@ -83,6 +106,10 @@ public final class Manager {
 
     //Тут не вижу смысла делать разные методы под разные группы, в любом случае айди уникальный
     public void deleteTaskAnID(long ID) {
+        if(tasks.containsKey(ID)){
+            tasks.remove(ID);
+            return;
+        }
         if(epics.containsKey(ID)){
             Epic epic = epics.get(ID);
             for(Long subtask : epic.getSubtasks()){
@@ -113,11 +140,17 @@ public final class Manager {
         return subtasks;
     }
 
+    public void updateTask(Task task) {
+        Task updatableTask = tasks.get(task.getID());
+        updatableTask.setName(task.getName());
+        updatableTask.setDescription(task.getDescription());
+        updatableTask.setStatus(task.getStatus());
+    }
+
     public void updateEpic(Epic epic) {
         Epic updatableEpic = epics.get(epic.getID());
         updatableEpic.setName(epic.getName());
         updatableEpic.setDescription(epic.getDescription());
-        updatableEpic.setStatus(epic.getStatus());
         checkStatus(updatableEpic);
     }
 
@@ -138,23 +171,11 @@ public final class Manager {
         checkStatus(epics.get(newEpicId));
     }
 
-    public void setStatusEpic(Epic epic, Status newStatus)
+    public void updateStatusTask(Task task, Status newStatus)
     {
-        if(epic == null) return;
-        if(epic.getSubtasks().isEmpty()){
-            epic.setStatus(newStatus);
-            return;
-        }
-        System.out.println("У эпика есть связанные сабтаски, которые мешают смене статуса");
+        if(task == null) return;
+        task.setStatus(newStatus);
     }
-
-    public void setStatusSubtask(Subtask subtask, Status newStatus)
-    {
-        if(subtask == null) return;
-        subtask.setStatus(newStatus);
-        checkStatus(epics.get(subtask.getIDEpic()));
-    }
-
 
     private void checkStatus(Epic epic){
         boolean allEqualsNew = true;

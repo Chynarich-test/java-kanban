@@ -29,6 +29,13 @@ public class Task {
         this.status = task.status;
     }
 
+    public Task(Task task, long ID){
+        this.name = task.name;
+        this.description = task.description;
+        this.ID = ID;
+        this.status = task.status;
+    }
+
     public Task(String name, String description, Status status){
         this.name = name;
         this.description = description;

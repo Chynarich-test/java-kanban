@@ -2,6 +2,7 @@ import manager.Manager;
 import tasks.Epic;
 import tasks.Status;
 import tasks.Subtask;
+import tasks.Task;
 
 public class Main {
 
@@ -23,8 +24,13 @@ public class Main {
         manager.addSubtaskToEpic(new Subtask("1 сабтаск у 2", "Сабтаск описание 3", Status.DONE, 1));
         manager.addSubtaskToEpic(new Subtask("1 сабтаск у 3", "Сабтаск описание 4", Status.NEW, 2));
         //Обратите внимание, что статус эпиков корректно поменялся из-за наличия у них сабтасков
+        manager.addTask(new Task("Таск 1", "Описание таска 1", Status.NEW));
+
         print(manager.getEpics());
         print(manager.getSubtasks());
+        print(manager.getTasks());
+
+
         print("\n");
 
         //2. Обновление задачи
@@ -40,14 +46,19 @@ public class Main {
         print(manager.getEpics());
         //Обратите внимание, что статус у 1 эпика поменялся на DONE потому что все сабтаски теперь завершены,
         // а статус 2 эпика поменялся на IN_PROGRESS потому, что в него переместился новый не выполненный сабтаск
+
+        print(manager.getTasks());
+        manager.updateTask(new Task("Таск 1 - обновленный", "Описание таска 1 - отредактированною", 7, Status.DONE));
+        print(manager.getTasks());
         print("\n");
 
 
         //3. Получение задачи по id
         print("3. Получение задачи по id");
         print(manager.getEpicAnID(0));
-        print(manager.getSubtaskAnID(7));
+        print(manager.getSubtaskAnID(8));
         print(manager.getTaskAnID(7));
+        print(manager.getObjectAnID(7));
         print("\n");
 
         //4. Получение всех сабтасков эпика по id
@@ -57,20 +68,9 @@ public class Main {
 
         //5. Обновление статуса задач
         print("5. Обновление статуса задач");
-        print(manager.getEpicAnID(0));
-        manager.setStatusEpic(manager.getEpicAnID(0), Status.IN_PROGRESS);
-        print(manager.getEpicAnID(0));
-        //изменение не вышло так как "У эпика есть связанные сабтаски, которые мешают смене статуса"
-        manager.setStatusSubtask(manager.getSubtaskAnID(3), Status.IN_PROGRESS);
-        print(manager.getEpicAnID(0));
-        print(manager.getSubtaskAnID(3));
-        //Статус был изменен не только у сабтаска, но и у закрепленного за ним эпика
-
-        manager.addEpic(new Epic("4 эпик", "Описание 4", Status.IN_PROGRESS));
-        print(manager.getEpicAnID(8));
-        manager.setStatusEpic(manager.getEpicAnID(8), Status.DONE);
-        print(manager.getEpicAnID(8));
-        //Тем временем у пустого эпика статус меняется так как он является самостоятельной задачей
+        print(manager.getTasks());
+        manager.updateStatusTask(manager.getTaskAnID(7), Status.IN_PROGRESS);
+        print(manager.getTasks());
         print("\n");
 
 
@@ -79,16 +79,27 @@ public class Main {
         print("6. Удаление задачи по id");
         print(manager.getEpicAnID(1));
         print(manager.getSubtaskAnID(5));
-        print(manager.getSubtaskAnID(7));
+        print(manager.getSubtaskAnID(8));
         manager.deleteTaskAnID(1);
         print(manager.getEpicAnID(1));
         print(manager.getSubtaskAnID(5));
-        print(manager.getSubtaskAnID(7));
+        print(manager.getSubtaskAnID(8));
         //сначала он вывел эпик и его сабтаски, после удаления, он его не нашел, а также не нашел его сабтаски
+
+        print(manager.getTasks());
+        manager.deleteTaskAnID(7);
+        print(manager.getTasks());
         print("\n");
 
         //7. Удаление всех задач данного типа
         print("7. Удаление всех задач данного типа");
+
+        manager.addTask(new Task("Задача 2", "Описание", Status.DONE));
+        print(manager.getTasks());
+        manager.deleteAllTasks();
+        print(manager.getTasks());
+
+        print("\n");
 
         print(manager.getSubtasks());
         manager.deleteAllSubtasks();
