@@ -59,7 +59,7 @@ public class Task {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Task task = (Task) o;
-        return Double.compare(ID, task.ID) == 0 && Objects.equals(name, task.name) && Objects.equals(description, task.description) && status == task.status;
+        return Double.compare(ID, task.ID) == 0;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package tasks;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class Epic extends Task{
     private final ArrayList<Long> subtasksIDs = new ArrayList<>();
@@ -22,6 +23,7 @@ public class Epic extends Task{
     }
 
     public void addSubTask(Long subtask){
+        if (subtask == getID()) return;
         subtasksIDs.add(subtask);
     }
 
@@ -38,4 +40,16 @@ public class Epic extends Task{
     }
 
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Epic epic = (Epic) o;
+        return Objects.equals(subtasksIDs, epic.subtasksIDs);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), subtasksIDs);
+    }
 }

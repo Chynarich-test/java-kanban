@@ -1,5 +1,7 @@
 package tasks;
 
+import java.util.Objects;
+
 public class Subtask extends Task{
     private final long IDEpic;
 
@@ -31,5 +33,18 @@ public class Subtask extends Task{
         return "Subtask{" +
                 "IDEpic=" + IDEpic +
                 "} " + super.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Subtask subtask = (Subtask) o;
+        return IDEpic == subtask.IDEpic;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), IDEpic);
     }
 }

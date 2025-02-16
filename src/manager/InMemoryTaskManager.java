@@ -8,22 +8,28 @@ import tasks.Task;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public final class Manager {
+public final class InMemoryTaskManager implements TaskManager {
     private static long maxID = 0;
     private final HashMap<Long, Task> tasks = new HashMap<>();
     private final HashMap<Long, Epic> epics = new HashMap<>();
     private final HashMap<Long ,Subtask> subtasks = new HashMap<>();
+    private final HistoryManager historyDB = new InMemoryHistoryManager();
 
+    @Override
     public void addTask(Task task) {
         long taskID = generateID();
         tasks.put(taskID, new Task(task, taskID));
+        historyDB.add(task);
     }
 
+    @Override
     public void addEpic(Epic epic) {
         long epicID = generateID();
         epics.put(epicID, new Epic(epic, epicID));
+        historyDB.add(epic);
     }
 
+    @Override
     public void addSubtaskToEpic(Subtask subtask) {
         if(!epics.containsKey(subtask.getIDEpic())){
             System.out.println("Ошибка: Эпик с ID " + subtask.getIDEpic() + " не найден.");
@@ -34,29 +40,36 @@ public final class Manager {
         subtasks.put(newSubtaskID, new Subtask(subtask, newSubtaskID, subtask.getIDEpic()));
         epic.addSubTask(newSubtaskID);
         checkStatus(epic);
+        historyDB.add(subtask);
     }
 
+    @Override
     public ArrayList<Task> getTasks() {
         return new ArrayList<>(tasks.values());
     }
 
+    @Override
     public ArrayList<Epic> getEpics() {
         return new ArrayList<>(epics.values());
     }
 
+    @Override
     public ArrayList<Subtask> getSubtasks(){
         return new ArrayList<>(subtasks.values());
     }
 
+    @Override
     public void deleteAllTasks() {
         tasks.clear();
     }
 
+    @Override
     public void deleteAllEpics() {
         epics.clear();
         subtasks.clear();
     }
 
+    @Override
     public void deleteAllSubtasks(){
         subtasks.clear();
         for(Epic epic : epics.values()){
@@ -66,6 +79,7 @@ public final class Manager {
     }
 
     //Сделал 3 метода когда пользователь знает что он хочет вернуть и когда не знает какой группе, принадлежит его айди
+    @Override
     public Object getObjectAnID(long ID) {
         if(tasks.containsKey(ID)){
             return tasks.get(ID);
@@ -80,6 +94,7 @@ public final class Manager {
         return null;
     }
 
+    @Override
     public Task getTaskAnID(long ID) {
         if(tasks.containsKey(ID)){
             return tasks.get(ID);
@@ -88,6 +103,7 @@ public final class Manager {
         return null;
     }
 
+    @Override
     public Epic getEpicAnID(long ID) {
         if(epics.containsKey(ID)){
             return epics.get(ID);
@@ -96,6 +112,7 @@ public final class Manager {
         return null;
     }
 
+    @Override
     public Subtask getSubtaskAnID(long ID) {
         if(subtasks.containsKey(ID)){
             return subtasks.get(ID);
@@ -105,6 +122,7 @@ public final class Manager {
     }
 
     //Тут не вижу смысла делать разные методы под разные группы, в любом случае айди уникальный
+    @Override
     public void deleteTaskAnID(long ID) {
         if(tasks.containsKey(ID)){
             tasks.remove(ID);
@@ -120,13 +138,14 @@ public final class Manager {
         }
         if(subtasks.containsKey(ID)){
             epics.get(subtasks.get(ID).getIDEpic()).getSubtasks().remove(ID);
+            checkStatus(epics.get(subtasks.get(ID).getIDEpic()));
             subtasks.remove(ID);
-
             return;
         }
         System.out.println("Объект не найден");
     }
 
+    @Override
     public ArrayList<Subtask> getSubtasksByID(long ID){
         if(!epics.containsKey(ID)){
             System.out.println("Объект не найден");
@@ -140,6 +159,7 @@ public final class Manager {
         return subtasks;
     }
 
+    @Override
     public void updateTask(Task task) {
         Task updatableTask = tasks.get(task.getID());
         updatableTask.setName(task.getName());
@@ -147,6 +167,7 @@ public final class Manager {
         updatableTask.setStatus(task.getStatus());
     }
 
+    @Override
     public void updateEpic(Epic epic) {
         Epic updatableEpic = epics.get(epic.getID());
         updatableEpic.setName(epic.getName());
@@ -154,6 +175,7 @@ public final class Manager {
         checkStatus(updatableEpic);
     }
 
+    @Override
     public void updateSubtask(Subtask subtask){
         Subtask updatableSubtask = subtasks.get(subtask.getID());
         long newEpicId = subtask.getIDEpic();
@@ -171,10 +193,9 @@ public final class Manager {
         checkStatus(epics.get(newEpicId));
     }
 
-    public void updateStatusTask(Task task, Status newStatus)
-    {
-        if(task == null) return;
-        task.setStatus(newStatus);
+    @Override
+    public ArrayList<Task> getHistory() {
+        return historyDB.getHistory();
     }
 
     private void checkStatus(Epic epic){
@@ -208,7 +229,7 @@ public final class Manager {
     }
 
 
-    private static long generateID() {
+    private long generateID() {
         return maxID++;
     }
 

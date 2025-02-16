@@ -1,4 +1,5 @@
-import manager.Manager;
+import manager.Managers;
+import manager.TaskManager;
 import tasks.Epic;
 import tasks.Status;
 import tasks.Subtask;
@@ -9,7 +10,7 @@ public class Main {
     public static void main(String[] args) {
         System.out.println("Поехали!");
 
-        Manager manager = new Manager();
+        TaskManager manager = Managers.getDefault();
         //1. Создания задачи данного типа
         print("1. Создания задачи данного типа");
         print(manager.getEpics());
@@ -67,10 +68,21 @@ public class Main {
         print("\n");
 
         //5. Обновление статуса задач
-        print("5. Обновление статуса задач");
-        print(manager.getTasks());
-        manager.updateStatusTask(manager.getTaskAnID(7), Status.IN_PROGRESS);
-        print(manager.getTasks());
+        print("5. получение истории");
+        int sh = 0;
+        for(Task o: manager.getHistory()){
+            sh++;
+            print(sh + ". " + o);
+        }
+        manager.addTask(new Task("Задача 2", "Описание", Status.DONE));
+        manager.addTask(new Task("Задача 3", "Описание", Status.DONE));
+        print("\n");
+        sh = 0;
+        for(Task o: manager.getHistory()){
+            sh++;
+            print(sh + ". " + o);
+        }
+        //можно увидеть как первый элемент удалился из-за переполнения
         print("\n");
 
 
@@ -94,7 +106,7 @@ public class Main {
         //7. Удаление всех задач данного типа
         print("7. Удаление всех задач данного типа");
 
-        manager.addTask(new Task("Задача 2", "Описание", Status.DONE));
+        manager.addTask(new Task("Задача 4", "Описание", Status.DONE));
         print(manager.getTasks());
         manager.deleteAllTasks();
         print(manager.getTasks());
