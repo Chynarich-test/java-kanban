@@ -1,4 +1,4 @@
-package manager.tests;
+package tests.manager;
 
 import manager.InMemoryTaskManager;
 import org.junit.jupiter.api.Test;

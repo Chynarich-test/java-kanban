@@ -13,20 +13,18 @@ public final class InMemoryTaskManager implements TaskManager {
     private final HashMap<Long, Task> tasks = new HashMap<>();
     private final HashMap<Long, Epic> epics = new HashMap<>();
     private final HashMap<Long ,Subtask> subtasks = new HashMap<>();
-    private final HistoryManager historyDB = new InMemoryHistoryManager();
+    private final HistoryManager historyDB = Managers.getDefaultHistory();
 
     @Override
     public void addTask(Task task) {
         long taskID = generateID();
         tasks.put(taskID, new Task(task, taskID));
-        historyDB.add(task);
     }
 
     @Override
     public void addEpic(Epic epic) {
         long epicID = generateID();
         epics.put(epicID, new Epic(epic, epicID));
-        historyDB.add(epic);
     }
 
     @Override
@@ -40,7 +38,6 @@ public final class InMemoryTaskManager implements TaskManager {
         subtasks.put(newSubtaskID, new Subtask(subtask, newSubtaskID, subtask.getIDEpic()));
         epic.addSubTask(newSubtaskID);
         checkStatus(epic);
-        historyDB.add(subtask);
     }
 
     @Override
@@ -74,20 +71,23 @@ public final class InMemoryTaskManager implements TaskManager {
         subtasks.clear();
         for(Epic epic : epics.values()){
             epic.getSubtasks().clear();
-            checkStatus(epic);
+            epic.setStatus(Status.NEW);
         }
     }
 
     //Сделал 3 метода когда пользователь знает что он хочет вернуть и когда не знает какой группе, принадлежит его айди
     @Override
-    public Object getObjectAnID(long ID) {
+    public Task getObjectAnID(long ID) {
         if(tasks.containsKey(ID)){
+            historyDB.add(tasks.get(ID));
             return tasks.get(ID);
         }
         if(epics.containsKey(ID)){
+            historyDB.add(epics.get(ID));
             return epics.get(ID);
         }
         if(subtasks.containsKey(ID)){
+            historyDB.add(subtasks.get(ID));
             return subtasks.get(ID);
         }
         System.out.println("Объект не найден");
@@ -97,6 +97,7 @@ public final class InMemoryTaskManager implements TaskManager {
     @Override
     public Task getTaskAnID(long ID) {
         if(tasks.containsKey(ID)){
+            historyDB.add(tasks.get(ID));
             return tasks.get(ID);
         }
         System.out.println("Объект не найден");
@@ -106,6 +107,7 @@ public final class InMemoryTaskManager implements TaskManager {
     @Override
     public Epic getEpicAnID(long ID) {
         if(epics.containsKey(ID)){
+            historyDB.add(epics.get(ID));
             return epics.get(ID);
         }
         System.out.println("Объект не найден");
@@ -115,6 +117,7 @@ public final class InMemoryTaskManager implements TaskManager {
     @Override
     public Subtask getSubtaskAnID(long ID) {
         if(subtasks.containsKey(ID)){
+            historyDB.add(subtasks.get(ID));
             return subtasks.get(ID);
         }
         System.out.println("Объект не найден");

@@ -74,8 +74,11 @@ public class Main {
             sh++;
             print(sh + ". " + o);
         }
-        manager.addTask(new Task("Задача 2", "Описание", Status.DONE));
-        manager.addTask(new Task("Задача 3", "Описание", Status.DONE));
+        manager.getTaskAnID(7);
+        manager.getTaskAnID(7);
+        manager.getTaskAnID(7);
+        manager.getTaskAnID(7);
+        manager.getTaskAnID(7);
         print("\n");
         sh = 0;
         for(Task o: manager.getHistory()){

@@ -1,4 +1,4 @@
-package tasks.tests;
+package tests.tasks;
 
 import org.junit.jupiter.api.Test;
 import tasks.Status;
