@@ -5,34 +5,34 @@ import java.util.Objects;
 public class Task {
     private String name;
     private String description;
-    private long ID;
+    private long id;
     private Status status;
 
-    public Task(String name, String description, long ID, String status) {
+    public Task(String name, String description, long id, String status) {
         this.name = name;
         this.description = description;
-        this.ID = ID;
+        this.id = id;
         this.status = Status.valueOf(status);
     }
 
-    public Task(String name, String description, long ID, Status status) {
+    public Task(String name, String description, long id, Status status) {
         this.name = name;
         this.description = description;
-        this.ID = ID;
+        this.id = id;
         this.status = status;
     }
 
     public Task(Task task) {
         this.name = task.name;
         this.description = task.description;
-        this.ID = task.ID;
+        this.id = task.id;
         this.status = task.status;
     }
 
-    public Task(Task task, long ID) {
+    public Task(Task task, long id) {
         this.name = task.name;
         this.description = task.description;
-        this.ID = ID;
+        this.id = id;
         this.status = task.status;
     }
 
@@ -42,8 +42,8 @@ public class Task {
         this.status = status;
     }
 
-    public long getID() {
-        return ID;
+    public long getId() {
+        return id;
     }
 
     @Override
@@ -59,12 +59,12 @@ public class Task {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Task task = (Task) o;
-        return Double.compare(ID, task.ID) == 0;
+        return Double.compare(id, task.id) == 0;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, description, ID, status);
+        return Objects.hash(name, description, id, status);
     }
 
     public Status getStatus() {

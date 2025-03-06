@@ -16,17 +16,17 @@ class InMemoryTaskManagerTest {
 
         Task task = new Task("Task", "Description", Status.NEW);
         manager.addTask(task);
-        assertNotNull(manager.getTaskAnID(manager.getTasks().getFirst().getID()),
+        assertNotNull(manager.getTaskAnID(manager.getTasks().getFirst().getId()),
                 "Задача должна быть найдена");
 
         Epic epic = new Epic("Epic", "Description", Status.NEW);
         manager.addEpic(epic);
-        assertNotNull(manager.getEpicAnID(manager.getEpics().getFirst().getID()), "Эпик должен быть найден");
+        assertNotNull(manager.getEpicAnID(manager.getEpics().getFirst().getId()), "Эпик должен быть найден");
 
         Subtask subtask = new Subtask("Subtask", "Description",
-                Status.NEW, manager.getEpics().getFirst().getID());
+                Status.NEW, manager.getEpics().getFirst().getId());
         manager.addSubtaskToEpic(subtask);
-        assertNotNull(manager.getSubtaskAnID(manager.getSubtasks().getFirst().getID()),
+        assertNotNull(manager.getSubtaskAnID(manager.getSubtasks().getFirst().getId()),
                 "Подзадача должна быть найдена");
     }
 
@@ -38,7 +38,7 @@ class InMemoryTaskManagerTest {
 
         Task task2 = new Task("Task2", "Desc", Status.NEW);
         manager.addTask(task2);
-        assertNotEquals(manager.getTasks().getFirst().getID(), manager.getTasks().getLast().getID(),
+        assertNotEquals(manager.getTasks().getFirst().getId(), manager.getTasks().getLast().getId(),
                 "ID задач не должны конфликтовать");
     }
 

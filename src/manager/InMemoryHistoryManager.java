@@ -20,8 +20,8 @@ public class InMemoryHistoryManager implements HistoryManager {
     @Override
     public void add(Task task) {
         if (task == null) return;
-        remove(task.getID());
-        historyDB.put(task.getID(), new Task(task));
+        remove(task.getId());
+        historyDB.put(task.getId(), new Task(task));
     }
 
 
