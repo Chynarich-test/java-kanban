@@ -1,22 +1,29 @@
 package manager;
 
+
 import tasks.Task;
 
-import java.util.ArrayList;
+import java.util.*;
 
 public class InMemoryHistoryManager implements HistoryManager{
 
-    private final ArrayList<Task> historyDB = new ArrayList<>();
-    private static final int MAX_HISTORY_SIZE = 10;
+    private final Map<Long, Task> historyDB= new LinkedHashMap<>();
 
     @Override
-    public ArrayList<Task> getHistory() {
-        return historyDB;
+    public List<Task> getHistory() {
+        return new ArrayList<>(historyDB.values());
     }
 
+    @Override
     public void add(Task task){
         if(task == null) return;
-        if(historyDB.size() == MAX_HISTORY_SIZE) historyDB.removeFirst();
-        historyDB.add(new Task(task));
+        remove(task.getID());
+        historyDB.put(task.getID(), new Task(task));
+    }
+
+
+    @Override
+    public void remove(long id) {
+        historyDB.remove(id);
     }
 }

@@ -7,6 +7,7 @@ import tasks.Task;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public final class InMemoryTaskManager implements TaskManager {
     private static long maxID = 0;
@@ -197,7 +198,7 @@ public final class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public ArrayList<Task> getHistory() {
+    public List<Task> getHistory() {
         return historyDB.getHistory();
     }
 
