@@ -2,24 +2,25 @@ package tasks;
 
 import java.util.Objects;
 
-public class Subtask extends Task{
+public class Subtask extends Task {
     private final long IDEpic;
 
     public Subtask(String name, String description, long ID, Status status, long IDEpic) {
         super(name, description, ID, status);
         this.IDEpic = IDEpic;
     }
+
     public Subtask(String name, String description, Status status, long IDEpic) {
         super(name, description, status);
         this.IDEpic = IDEpic;
     }
 
-    public Subtask(Subtask subtask, long ID, long IDEpic){
+    public Subtask(Subtask subtask, long ID, long IDEpic) {
         super(subtask.getName(), subtask.getDescription(), ID, subtask.getStatus());
         this.IDEpic = IDEpic;
     }
 
-    public Subtask(Subtask subtask, long IDEpic){
+    public Subtask(Subtask subtask, long IDEpic) {
         super(subtask.getName(), subtask.getDescription(), subtask.getStatus());
         this.IDEpic = IDEpic;
     }

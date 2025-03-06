@@ -3,7 +3,7 @@ package tasks;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class Epic extends Task{
+public class Epic extends Task {
     private final ArrayList<Long> subtasksIDs = new ArrayList<>();
 
     public Epic(String name, String description, long ID, Status status) {
@@ -14,15 +14,15 @@ public class Epic extends Task{
         super(name, description, status);
     }
 
-    public Epic(Epic epic, long ID){
+    public Epic(Epic epic, long ID) {
         super(epic.getName(), epic.getDescription(), ID, epic.getStatus());
     }
 
-    public Epic(Epic epic){
+    public Epic(Epic epic) {
         super(epic.getName(), epic.getDescription(), epic.getStatus());
     }
 
-    public void addSubTask(Long subtask){
+    public void addSubTask(Long subtask) {
         if (subtask == getID()) return;
         subtasksIDs.add(subtask);
     }

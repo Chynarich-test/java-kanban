@@ -3,11 +3,14 @@ package manager;
 
 import tasks.Task;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
-public class InMemoryHistoryManager implements HistoryManager{
+public class InMemoryHistoryManager implements HistoryManager {
 
-    private final Map<Long, Task> historyDB= new LinkedHashMap<>();
+    private final Map<Long, Task> historyDB = new LinkedHashMap<>();
 
     @Override
     public List<Task> getHistory() {
@@ -15,8 +18,8 @@ public class InMemoryHistoryManager implements HistoryManager{
     }
 
     @Override
-    public void add(Task task){
-        if(task == null) return;
+    public void add(Task task) {
+        if (task == null) return;
         remove(task.getID());
         historyDB.put(task.getID(), new Task(task));
     }
