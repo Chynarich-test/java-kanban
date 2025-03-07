@@ -1,8 +1,6 @@
-package java.tasks;
+package tasks;
 
 import org.junit.jupiter.api.Test;
-import tasks.Epic;
-import tasks.Status;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

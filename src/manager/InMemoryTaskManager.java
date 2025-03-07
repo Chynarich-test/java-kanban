@@ -1,5 +1,6 @@
 package manager;
 
+import manager.history.HistoryManager;
 import tasks.Epic;
 import tasks.Status;
 import tasks.Subtask;
@@ -10,11 +11,11 @@ import java.util.HashMap;
 import java.util.List;
 
 public final class InMemoryTaskManager implements TaskManager {
-    private static long maxID = 0;
     private final HashMap<Long, Task> tasks = new HashMap<>();
     private final HashMap<Long, Epic> epics = new HashMap<>();
     private final HashMap<Long, Subtask> subtasks = new HashMap<>();
     private final HistoryManager historyDB = Managers.getDefaultHistory();
+    private long maxID = 0;
 
     @Override
     public void addTask(Task task) {
@@ -58,17 +59,21 @@ public final class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteAllTasks() {
+        historyDB.remove(new ArrayList<>(tasks.values()));
         tasks.clear();
     }
 
     @Override
     public void deleteAllEpics() {
+        historyDB.remove(new ArrayList<>(epics.values()));
+        historyDB.remove(new ArrayList<>(subtasks.values()));
         epics.clear();
         subtasks.clear();
     }
 
     @Override
     public void deleteAllSubtasks() {
+        historyDB.remove(new ArrayList<>(subtasks.values()));
         subtasks.clear();
         for (Epic epic : epics.values()) {
             epic.getSubtasks().clear();
@@ -129,14 +134,17 @@ public final class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteTaskAnID(long id) {
         if (tasks.containsKey(id)) {
+            historyDB.remove(id);
             tasks.remove(id);
             return;
         }
         if (epics.containsKey(id)) {
             Epic epic = epics.get(id);
             for (Long subtask : epic.getSubtasks()) {
+                historyDB.remove(subtask);
                 subtasks.remove(subtask);
             }
+            historyDB.remove(id);
             epics.remove(id);
             return;
         }
@@ -144,6 +152,7 @@ public final class InMemoryTaskManager implements TaskManager {
             epics.get(subtasks.get(id).getIdEpic()).getSubtasks().remove(id);
             checkStatus(epics.get(subtasks.get(id).getIdEpic()));
             subtasks.remove(id);
+            historyDB.remove(id);
             return;
         }
         System.out.println("Объект не найден");
