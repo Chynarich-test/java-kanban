@@ -11,18 +11,44 @@ import java.util.Map;
 public class InMemoryHistoryManager implements HistoryManager {
 
     private final Map<Long, Node> historyDB = new HashMap<>();
-    private Long first = null;
-    private Long last = null;
+    private Node first = null;
+    private Node last = null;
+
+    private Node linkLast(Task task) {
+        Node newNode = new Node(new Task(task), null, last);
+        if (first == null) {
+            first = newNode;
+        } else {
+            last.next = newNode;
+        }
+        last = newNode;
+        return newNode;
+    }
+
+    private void removeNode(Node node) {
+        if (node == null) return;
+
+        if (node.prev != null) {
+            node.prev.next = node.next;
+        } else {
+            first = node.next;
+        }
+
+        if (node.next != null) {
+            node.next.prev = node.prev;
+        } else {
+            last = node.prev;
+        }
+    }
 
     @Override
     public List<Task> getHistory() {
         if (historyDB.isEmpty()) return List.of();
         List<Task> history = new ArrayList<>();
-        Long currentId = first;
-        while (currentId != null) {
-            Node currentNode = historyDB.get(currentId);
+        Node currentNode = first;
+        while (currentNode != null) {
             history.add(currentNode.task);
-            currentId = currentNode.next;
+            currentNode = currentNode.next;
         }
         return history;
     }
@@ -34,16 +60,7 @@ public class InMemoryHistoryManager implements HistoryManager {
         if (historyDB.containsKey(taskId)) {
             remove(taskId);
         }
-        if (historyDB.isEmpty()) {
-            first = taskId;
-            last = taskId;
-            historyDB.put(taskId, new Node(new Task(task), null, null));
-        } else {
-            Long oldLast = last;
-            historyDB.get(oldLast).next = taskId;
-            last = taskId;
-            historyDB.put(taskId, new Node(new Task(task), null, oldLast));
-        }
+        historyDB.put(taskId, linkLast(task));
     }
 
 
@@ -51,24 +68,8 @@ public class InMemoryHistoryManager implements HistoryManager {
     public void remove(long id) {
         if (!historyDB.containsKey(id)) return;
         Node oldNode = historyDB.get(id);
-
-        if (first != null && first.equals(id)) {
-            first = oldNode.next;
-        }
-        if (last != null && last.equals(id)) {
-            last = oldNode.prev;
-        }
-        if (oldNode.prev != null && historyDB.containsKey(oldNode.prev)) {
-            Node prevNode = historyDB.get(oldNode.prev);
-            prevNode.next = oldNode.next;
-        }
-        if (oldNode.next != null && historyDB.containsKey(oldNode.next)) {
-            Node nextNode = historyDB.get(oldNode.next);
-            nextNode.prev = oldNode.prev;
-        }
-
+        removeNode(oldNode);
         historyDB.remove(id);
-
         if (historyDB.isEmpty()) {
             first = null;
             last = null;

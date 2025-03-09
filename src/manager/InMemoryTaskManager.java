@@ -85,16 +85,19 @@ public final class InMemoryTaskManager implements TaskManager {
     @Override
     public Task getObjectAnID(long id) {
         if (tasks.containsKey(id)) {
-            historyDB.add(tasks.get(id));
-            return tasks.get(id);
+            Task task = tasks.get(id);
+            historyDB.add(task);
+            return task;
         }
         if (epics.containsKey(id)) {
-            historyDB.add(epics.get(id));
-            return epics.get(id);
+            Task epic = epics.get(id);
+            historyDB.add(epic);
+            return epic;
         }
         if (subtasks.containsKey(id)) {
-            historyDB.add(subtasks.get(id));
-            return subtasks.get(id);
+            Task subtask = subtasks.get(id);
+            historyDB.add(subtask);
+            return subtask;
         }
         System.out.println("Объект не найден");
         return null;
