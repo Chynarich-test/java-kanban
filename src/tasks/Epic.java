@@ -3,27 +3,27 @@ package tasks;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class Epic extends Task{
+public class Epic extends Task {
     private final ArrayList<Long> subtasksIDs = new ArrayList<>();
 
-    public Epic(String name, String description, long ID, Status status) {
-        super(name, description, ID, status);
+    public Epic(String name, String description, long id, Status status) {
+        super(name, description, id, status);
     }
 
     public Epic(String name, String description, Status status) {
         super(name, description, status);
     }
 
-    public Epic(Epic epic, long ID){
-        super(epic.getName(), epic.getDescription(), ID, epic.getStatus());
+    public Epic(Epic epic, long id) {
+        super(epic.getName(), epic.getDescription(), id, epic.getStatus());
     }
 
-    public Epic(Epic epic){
+    public Epic(Epic epic) {
         super(epic.getName(), epic.getDescription(), epic.getStatus());
     }
 
-    public void addSubTask(Long subtask){
-        if (subtask == getID()) return;
+    public void addSubTask(Long subtask) {
+        if (subtask == getId()) return;
         subtasksIDs.add(subtask);
     }
 

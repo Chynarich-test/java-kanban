@@ -2,36 +2,37 @@ package tasks;
 
 import java.util.Objects;
 
-public class Subtask extends Task{
-    private final long IDEpic;
+public class Subtask extends Task {
+    private final long idEpic;
 
-    public Subtask(String name, String description, long ID, Status status, long IDEpic) {
-        super(name, description, ID, status);
-        this.IDEpic = IDEpic;
+    public Subtask(String name, String description, long id, Status status, long idEpic) {
+        super(name, description, id, status);
+        this.idEpic = idEpic;
     }
-    public Subtask(String name, String description, Status status, long IDEpic) {
+
+    public Subtask(String name, String description, Status status, long idEpic) {
         super(name, description, status);
-        this.IDEpic = IDEpic;
+        this.idEpic = idEpic;
     }
 
-    public Subtask(Subtask subtask, long ID, long IDEpic){
-        super(subtask.getName(), subtask.getDescription(), ID, subtask.getStatus());
-        this.IDEpic = IDEpic;
+    public Subtask(Subtask subtask, long id, long idEpic) {
+        super(subtask.getName(), subtask.getDescription(), id, subtask.getStatus());
+        this.idEpic = idEpic;
     }
 
-    public Subtask(Subtask subtask, long IDEpic){
+    public Subtask(Subtask subtask, long idEpic) {
         super(subtask.getName(), subtask.getDescription(), subtask.getStatus());
-        this.IDEpic = IDEpic;
+        this.idEpic = idEpic;
     }
 
-    public long getIDEpic() {
-        return IDEpic;
+    public long getIdEpic() {
+        return idEpic;
     }
 
     @Override
     public String toString() {
         return "Subtask{" +
-                "IDEpic=" + IDEpic +
+                "IDEpic=" + idEpic +
                 "} " + super.toString();
     }
 
@@ -43,6 +44,6 @@ public class Subtask extends Task{
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), IDEpic);
+        return Objects.hash(super.hashCode(), idEpic);
     }
 }

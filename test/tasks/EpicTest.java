@@ -1,10 +1,8 @@
-package tests.tasks;
+package tasks;
 
 import org.junit.jupiter.api.Test;
-import tasks.Epic;
-import tasks.Status;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class EpicTest {
     @Test
@@ -15,7 +13,7 @@ class EpicTest {
     }
 
     @Test
-    void epicAddYourselfToYourself(){
+    void epicAddYourselfToYourself() {
         Epic epic1 = new Epic("Epic1", "Description1", 1, Status.NEW);
         epic1.addSubTask((long) 1);
         assertEquals(0, epic1.getSubtasks().size(), "Эпики не должны добавляться друг в друга");
