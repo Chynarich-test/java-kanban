@@ -3,6 +3,7 @@ package tasks;
 import java.util.Objects;
 
 public class Task {
+    protected Type type;
     private String name;
     private String description;
     private long id;
@@ -13,6 +14,7 @@ public class Task {
         this.description = description;
         this.id = id;
         this.status = Status.valueOf(status);
+        this.type = Type.TASK;
     }
 
     public Task(String name, String description, long id, Status status) {
@@ -20,6 +22,7 @@ public class Task {
         this.description = description;
         this.id = id;
         this.status = status;
+        this.type = Type.TASK;
     }
 
     public Task(Task task) {
@@ -27,6 +30,7 @@ public class Task {
         this.description = task.description;
         this.id = task.id;
         this.status = task.status;
+        this.type = Type.TASK;
     }
 
     public Task(Task task, long id) {
@@ -34,12 +38,14 @@ public class Task {
         this.description = task.description;
         this.id = id;
         this.status = task.status;
+        this.type = Type.TASK;
     }
 
     public Task(String name, String description, Status status) {
         this.name = name;
         this.description = description;
         this.status = status;
+        this.type = Type.TASK;
     }
 
     public long getId() {
@@ -53,6 +59,10 @@ public class Task {
                 ", description='" + description + '\'' +
                 ", status=" + status +
                 '}';
+    }
+
+    public String toCsvString() {
+        return id + "," + type + "," + name + "," + description + "," + status;
     }
 
     @Override
