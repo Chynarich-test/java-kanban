@@ -4,15 +4,11 @@ import manager.history.HistoryManager;
 import manager.history.InMemoryHistoryManager;
 
 public class Managers {
-    public static TaskManager getDefault() {
-        return new InMemoryTaskManager();
+    public static FileBackedTaskManager getDefault() {
+        return new FileBackedTaskManager();
     }
 
     public static HistoryManager getDefaultHistory() {
         return new InMemoryHistoryManager();
-    }
-
-    public static FileBackedTaskManager getFileTaskManager() {
-        return new FileBackedTaskManager();
     }
 }
