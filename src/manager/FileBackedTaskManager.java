@@ -1,14 +1,17 @@
 package manager;
 
+import manager.exceptions.FileLoadException;
 import tasks.Epic;
+import tasks.Status;
 import tasks.Subtask;
 import tasks.Task;
 
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
@@ -23,10 +26,55 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         this.fileName = fileName;
     }
 
+    public static FileBackedTaskManager loadFromFile(File file) throws FileLoadException {
+        try {
+            List<String> list = new ArrayList<>();
+            try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+                while (br.ready()) {
+                    list.add(br.readLine());
+                }
+            }
+
+            FileBackedTaskManager manager = new FileBackedTaskManager();
+
+
+            for (String item : list) {
+                String[] parseItem = List.of(item.split(",")).toArray(new String[0]);
+                String itemType = parseItem[1];
+
+                switch (itemType) {
+                    case "TASK":
+                        Task task = new Task(parseItem[2], parseItem[3],
+                                Long.parseLong(parseItem[0]), parseItem[4]);
+                        manager.tasks.put(Long.parseLong(parseItem[0]), task);
+                        break;
+                    case "EPIC":
+                        Epic epic = new Epic(parseItem[2], parseItem[3],
+                                Long.parseLong(parseItem[0]), Status.valueOf(parseItem[4]));
+                        manager.epics.put(Long.parseLong(parseItem[0]), epic);
+                        break;
+                    case "SUBTASK":
+                        Subtask subtask = new Subtask(parseItem[2], parseItem[3],
+                                Long.parseLong(parseItem[0]), Status.valueOf(parseItem[4]), Long.parseLong(parseItem[5]));
+                        manager.subtasks.put(Long.parseLong(parseItem[0]), subtask);
+
+                        Epic epicForSubtask = manager.epics.get(subtask.getIdEpic());
+                        epicForSubtask.addSubTask(Long.parseLong(parseItem[0]));
+                        break;
+                }
+            }
+            manager.maxID = list.size();
+            return manager;
+
+        } catch (IOException e) {
+            throw new FileLoadException();
+        }
+    }
+
     private void save() {
         try {
             Path db = Paths.get(PROJECT_ROOT, "resources", fileName);
-            Files.write(db, new byte[0]);
+            Files.write(db, "id,type,name,status,description,epic\n".getBytes());
 
             try (FileWriter fileWriter = new FileWriter(
                     db.toString(), true)) {

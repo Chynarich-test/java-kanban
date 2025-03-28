@@ -9,8 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class FileBackedTaskManagerTest {
     private static final String TEST_FILE = "test_tasks.txt";
@@ -38,7 +37,7 @@ class FileBackedTaskManagerTest {
         assertTrue(file.exists());
 
         String content = Files.readString(file.toPath());
-        assertTrue(content.contains("0,TASK,Таск 1,Описание,NEW"));
+        assertTrue(content.contains("0,TASK,Таск 1,Описание,NEW,"));
     }
 
     @Test
@@ -50,7 +49,7 @@ class FileBackedTaskManagerTest {
         File file = new File("resources/" + TEST_FILE);
         String content = Files.readString(file.toPath());
 
-        assertTrue(content.isEmpty());
+        assertEquals("id,type,name,status,description,epic\n", content);
     }
 
     @Test
@@ -62,6 +61,6 @@ class FileBackedTaskManagerTest {
         File file = new File("resources/" + TEST_FILE);
         String content = Files.readString(file.toPath());
 
-        assertFalse(content.contains("1,TASK,Таск 1,Описание,NEW"));
+        assertFalse(content.contains("1,TASK,Таск 1,Описание,NEW,"));
     }
 }

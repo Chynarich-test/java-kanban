@@ -10,7 +10,7 @@ public class Main {
     public static void main(String[] args) {
         try {
             FileBackedTaskSerializer.createDbFiles("tasks.txt");
-            FileBackedTaskManager manager = FileBackedTaskSerializer.loadFromFile(
+            FileBackedTaskManager manager = FileBackedTaskManager.loadFromFile(
                     Paths.get(System.getProperty("user.dir"), "resources", "tasks.txt").toFile());
             System.out.println(manager.getEpicAnID(2));
             System.out.println(manager.getSubtaskAnID(4));
