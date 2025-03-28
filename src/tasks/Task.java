@@ -55,6 +55,7 @@ public class Task {
                 '}';
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
@@ -89,5 +90,9 @@ public class Task {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Type getType() {
+        return Type.TASK;
     }
 }

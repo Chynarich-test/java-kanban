@@ -4,10 +4,15 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class Epic extends Task {
-    private final ArrayList<Long> subtasksIDs = new ArrayList<>();
+    private ArrayList<Long> subtasksIDs = new ArrayList<>();
 
     public Epic(String name, String description, long id, Status status) {
         super(name, description, id, status);
+    }
+
+    public Epic(String name, String description, long id, String status, ArrayList<Long> subtasksIDs) {
+        super(name, description, id, status);
+        this.subtasksIDs = subtasksIDs;
     }
 
     public Epic(String name, String description, Status status) {
@@ -51,5 +56,10 @@ public class Epic extends Task {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), subtasksIDs);
+    }
+
+    @Override
+    public Type getType() {
+        return Type.EPIC;
     }
 }
