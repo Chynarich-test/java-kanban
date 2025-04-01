@@ -10,12 +10,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public final class InMemoryTaskManager implements TaskManager {
-    private final HashMap<Long, Task> tasks = new HashMap<>();
-    private final HashMap<Long, Epic> epics = new HashMap<>();
-    private final HashMap<Long, Subtask> subtasks = new HashMap<>();
-    private final HistoryManager historyDB = Managers.getDefaultHistory();
-    private long maxID = 0;
+public class InMemoryTaskManager implements TaskManager {
+    protected final HashMap<Long, Task> tasks = new HashMap<>();
+    protected final HashMap<Long, Epic> epics = new HashMap<>();
+    protected final HashMap<Long, Subtask> subtasks = new HashMap<>();
+    protected final HistoryManager historyDB = Managers.getDefaultHistory();
+    protected long maxID = 0;
 
     @Override
     public void addTask(Task task) {
@@ -214,7 +214,7 @@ public final class InMemoryTaskManager implements TaskManager {
         return historyDB.getHistory();
     }
 
-    private void checkStatus(Epic epic) {
+    protected void checkStatus(Epic epic) {
         boolean allEqualsNew = true;
         boolean allEqualsDone = true;
         ArrayList<Long> epicSubtasks = epic.getSubtasks();
@@ -245,7 +245,7 @@ public final class InMemoryTaskManager implements TaskManager {
     }
 
 
-    private long generateID() {
+    protected long generateID() {
         return maxID++;
     }
 
