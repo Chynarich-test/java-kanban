@@ -1,5 +1,7 @@
 package tasks;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Subtask extends Task {
@@ -10,13 +12,18 @@ public class Subtask extends Task {
         this.idEpic = idEpic;
     }
 
+    public Subtask(String name, String description, long id, Status status, long idEpic, Duration duration, LocalDateTime startTime) {
+        super(name, description, id, status, duration, startTime);
+        this.idEpic = idEpic;
+    }
+
     public Subtask(String name, String description, Status status, long idEpic) {
         super(name, description, status);
         this.idEpic = idEpic;
     }
 
     public Subtask(Subtask subtask, long id, long idEpic) {
-        super(subtask.getName(), subtask.getDescription(), id, subtask.getStatus());
+        super(subtask.getName(), subtask.getDescription(), id, subtask.getStatus(), subtask.getDuration(), subtask.getStartTime());
         this.idEpic = idEpic;
     }
 

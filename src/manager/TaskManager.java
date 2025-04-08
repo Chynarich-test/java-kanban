@@ -4,6 +4,8 @@ import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +38,7 @@ public interface TaskManager {
 
     void deleteTaskAnID(long id);
 
-    ArrayList<Subtask> getSubtasksByID(long id);
+    List<Subtask> getSubtasksByID(long id);
 
     void updateTask(Task task);
 
@@ -45,4 +47,12 @@ public interface TaskManager {
     void updateSubtask(Subtask subtask);
 
     List<Task> getHistory();
+
+    Duration getDuration(Task task);
+
+    LocalDateTime getStartTime(Task task);
+
+    LocalDateTime getEndTime(Task task);
+
+    boolean hasTimeConflict();
 }

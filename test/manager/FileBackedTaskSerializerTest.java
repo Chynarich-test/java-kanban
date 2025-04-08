@@ -30,14 +30,14 @@ class FileBackedTaskSerializerTest {
     void ShouldSerializeTaskCorrectly() {
         Task task = new Task("Тестовый таск", "Описание", 1, "NEW");
         String file = FileBackedTaskSerializer.toCsvString(task);
-        assertEquals("1,TASK,Тестовый таск,Описание,NEW,", file);
+        assertEquals("1,TASK,Тестовый таск,Описание,NEW,null,null,", file);
     }
 
     @Test
     void ShouldSerializeSubtaskCorrectly() {
         Subtask subtask = new Subtask("Тестовый сабтаск", "Описание", 2, Status.NEW, 1);
         String file = FileBackedTaskSerializer.toCsvString(subtask);
-        assertEquals("2,SUBTASK,Тестовый сабтаск,Описание,NEW,1", file);
+        assertEquals("2,SUBTASK,Тестовый сабтаск,Описание,NEW,null,null,1", file);
     }
 
     @Test
@@ -50,9 +50,9 @@ class FileBackedTaskSerializerTest {
     @Test
     void ShouldLoadTasksCorrectly() throws IOException, FileLoadException {
         String content = """
-                1,TASK,Тестовый таск,Описание,NEW,
-                2,EPIC,Тестовый Эпик,Описание,NEW,
-                3,SUBTASK,Тестовый Сабтаск,Описание,NEW,2
+                1,TASK,Тестовый таск,Описание,NEW,PT1H,2024-03-01T10:00,
+                2,EPIC,Тестовый Эпик,Описание,NEW,PT1H,2024-03-01T10:00,
+                3,SUBTASK,Тестовый Сабтаск,Описание,NEW,PT1H,2024-03-01T10:00,2
                 """;
         Files.write(new File(TEST_FILE).toPath(), content.getBytes());
 
