@@ -72,4 +72,28 @@ class InMemoryHistoryManagerTest {
 
         assertTrue(historyManager.getHistory().isEmpty(), "История должна стать пустой после удаления");
     }
+
+    @Test
+    void shouldRemoveFromMiddle() {
+        historyManager.add(task1);
+        historyManager.add(task2);
+        historyManager.add(task3);
+
+        historyManager.remove(task2.getId());
+
+        assertIterableEquals(List.of(task1, task3), historyManager.getHistory(),
+                "Задача из середины должна быть удалена");
+    }
+
+    @Test
+    void shouldRemoveFromEnd() {
+        historyManager.add(task1);
+        historyManager.add(task2);
+        historyManager.add(task3);
+
+        historyManager.remove(task3.getId());
+
+        assertIterableEquals(List.of(task1, task2), historyManager.getHistory(),
+                "Последняя задача должна быть удалена");
+    }
 }

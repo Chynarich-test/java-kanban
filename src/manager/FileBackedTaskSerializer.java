@@ -15,7 +15,8 @@ public class FileBackedTaskSerializer {
     public static String toCsvString(Task task) {
         String outString = "";
         outString += task.getId() + "," + task.getType() + "," + task.getName()
-                + "," + task.getDescription() + "," + task.getStatus() + ",";
+                + "," + task.getDescription() + "," + task.getStatus() + "," + task.getDuration() + ","
+                + task.getStartTime() + ",";
         if (task instanceof Subtask) {
             outString += ((Subtask) task).getIdEpic();
         }

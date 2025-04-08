@@ -10,6 +10,8 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,7 +47,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 switch (itemType) {
                     case "TASK":
                         Task task = new Task(parseItem[2], parseItem[3],
-                                Long.parseLong(parseItem[0]), parseItem[4]);
+                                Long.parseLong(parseItem[0]), Status.valueOf(parseItem[4]),
+                                Duration.parse(parseItem[5]), LocalDateTime.parse(parseItem[6]));
                         manager.tasks.put(Long.parseLong(parseItem[0]), task);
                         break;
                     case "EPIC":
@@ -55,7 +58,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                         break;
                     case "SUBTASK":
                         Subtask subtask = new Subtask(parseItem[2], parseItem[3],
-                                Long.parseLong(parseItem[0]), Status.valueOf(parseItem[4]), Long.parseLong(parseItem[5]));
+                                Long.parseLong(parseItem[0]), Status.valueOf(parseItem[4]),
+                                Long.parseLong(parseItem[7]),
+                                Duration.parse(parseItem[5]), LocalDateTime.parse(parseItem[6]));
                         manager.subtasks.put(Long.parseLong(parseItem[0]), subtask);
 
                         Epic epicForSubtask = manager.epics.get(subtask.getIdEpic());
@@ -74,7 +79,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     private void save() {
         try {
             Path db = Paths.get(PROJECT_ROOT, "resources", fileName);
-            Files.write(db, "id,type,name,status,description,epic\n".getBytes());
+            Files.write(db, "id,type,name,status,description,duration,startTime,epic\n".getBytes());
 
             try (FileWriter fileWriter = new FileWriter(
                     db.toString(), true)) {
