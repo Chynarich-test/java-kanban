@@ -9,7 +9,7 @@ import tasks.Task;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public abstract class TaskManagerTest<T extends TaskManager> {
 
@@ -78,94 +78,60 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void hasTimeConflict_NoTasks_ReturnsFalse() {
-        assertFalse(taskManager.hasTimeConflict(), "Пустой список задач нет конфликтов");
-    }
-
-    @Test
-    void hasTimeConflict_SingleTask_ReturnsFalse() {
-        Task task = new Task("Task", "Desc", 0, Status.NEW,
-                Duration.ofMinutes(30), LocalDateTime.now());
-        taskManager.addTask(task);
-
-        assertFalse(taskManager.hasTimeConflict());
-    }
-
-    @Test
-    void hasTimeConflict_NonOverlapping_ReturnsFalse() {
+    void shouldCreateTaskWhenNoTimeOverlap() {
+        // Задача создается, когда нет пересечений по времени
         Task task1 = new Task("1", "D", 0, Status.NEW,
                 Duration.ofHours(1), LocalDateTime.of(2024, 1, 1, 10, 0));
         Task task2 = new Task("2", "D", 1, Status.NEW,
-                Duration.ofHours(2), LocalDateTime.of(2024, 1, 1, 11, 1));
+                Duration.ofHours(1), LocalDateTime.of(2024, 1, 1, 11, 30));
 
         taskManager.addTask(task1);
         taskManager.addTask(task2);
 
-        assertFalse(taskManager.hasTimeConflict());
+        assertEquals(2, taskManager.getTasks().size(), "Обе задачи должны быть добавлены");
     }
 
     @Test
-    void hasTimeConflict_Overlapping_ReturnsTrue() {
-        // Задачи полностью пересекаются
-        LocalDateTime start = LocalDateTime.of(2024, 1, 1, 12, 0);
+    void shouldNotCreateTaskWhenFullyInsideAnotherTask() {
+        // Задача не создается, если она полностью внутри другой задачи
         Task task1 = new Task("1", "D", 0, Status.NEW,
-                Duration.ofHours(2), start);
+                Duration.ofHours(2), LocalDateTime.of(2024, 1, 1, 10, 0));
         Task task2 = new Task("2", "D", 1, Status.NEW,
-                Duration.ofHours(1), start.plusMinutes(30));
+                Duration.ofMinutes(30), LocalDateTime.of(2024, 1, 1, 10, 30));
 
         taskManager.addTask(task1);
         taskManager.addTask(task2);
 
-        assertTrue(taskManager.hasTimeConflict());
+        assertEquals(1, taskManager.getTasks().size(), "Только первая задача должна быть добавлена");
     }
 
     @Test
-    void hasTimeConflict_EdgeCaseEqualStart_ReturnsTrue() {
-        // Одинаковое время начала
-        LocalDateTime start = LocalDateTime.of(2024, 1, 1, 9, 0);
+    void shouldNotCreateTaskWhenStartOrEndOverlaps() {
+        // Задача не создается, если её начало или конец попадает в промежуток другой задачи
         Task task1 = new Task("1", "D", 0, Status.NEW,
-                Duration.ofMinutes(30), start);
-        Task task2 = new Task("2", "D", 1, Status.NEW,
-                Duration.ofMinutes(30), start);
-
-        taskManager.addTask(task1);
-        taskManager.addTask(task2);
-
-        assertTrue(taskManager.hasTimeConflict());
-    }
-
-    @Test
-    void hasTimeConflict_SubtaskAndTaskOverlap_ReturnsTrue() {
-        // Подзадача эпика пересекается с обычной задачей
-        Epic epic = new Epic("E", "D", Status.NEW);
-        taskManager.addEpic(epic);
-
-        Subtask subtask = new Subtask("S", "D", 1, Status.NEW, epic.getId(),
                 Duration.ofHours(1), LocalDateTime.of(2024, 1, 1, 10, 0));
-        Task task = new Task("T", "D", 2, Status.NEW,
-                Duration.ofHours(2), LocalDateTime.of(2024, 1, 1, 10, 30));
+        Task task2 = new Task("2", "D", 1, Status.NEW,
+                Duration.ofHours(1), LocalDateTime.of(2024, 1, 1, 10, 30));
 
-        taskManager.addSubtaskToEpic(subtask);
-        taskManager.addTask(task);
+        taskManager.addTask(task1);
+        taskManager.addTask(task2);
 
-        assertTrue(taskManager.hasTimeConflict());
+        assertEquals(1, taskManager.getTasks().size(), "Только первая задача должна быть добавлена");
     }
 
     @Test
-    void hasTimeConflict_EpicWithSubtasks_ChecksCorrectly() {
-        // Эпик с подзадачами должен учитываться
-        Epic epic = new Epic("E", "D", Status.NEW);
-        taskManager.addEpic(epic);
+    void shouldNotCreateTaskWhenStartOrEndEquals() {
+        // Задача не создается, если её начало или конец совпадает с другой задачей
+        LocalDateTime startTime = LocalDateTime.of(2024, 1, 1, 10, 0);
+        Task task1 = new Task("1", "D", 0, Status.NEW,
+                Duration.ofHours(1), startTime);
+        Task task2 = new Task("2", "D", 1, Status.NEW,
+                Duration.ofHours(1), startTime);
 
-        Subtask sub1 = new Subtask("S1", "D", 1, Status.NEW, epic.getId(),
-                Duration.ofHours(2), LocalDateTime.of(2024, 1, 1, 8, 0));
-        Subtask sub2 = new Subtask("S2", "D", 2, Status.NEW, epic.getId(),
-                Duration.ofHours(1), LocalDateTime.of(2024, 1, 1, 9, 30));
+        taskManager.addTask(task1);
+        taskManager.addTask(task2);
 
-        taskManager.addSubtaskToEpic(sub1);
-        taskManager.addSubtaskToEpic(sub2);
-
-        assertTrue(taskManager.hasTimeConflict());
+        assertEquals(1, taskManager.getTasks().size(), "Только первая задача должна быть добавлена");
     }
 
 
