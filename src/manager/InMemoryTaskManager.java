@@ -195,10 +195,9 @@ public class InMemoryTaskManager implements TaskManager {
             return null;
         }
         ArrayList<Long> subtasksIDs = epics.get(id).getSubtasks();
-        List<Subtask> subtasks = subtasksIDs.stream()
-                .map(this::getSubtaskAnID).collect(Collectors.toList());
 
-        return subtasks;
+        return subtasksIDs.stream()
+                .map(subtasks::get).collect(Collectors.toList());
     }
 
     @Override
@@ -248,7 +247,6 @@ public class InMemoryTaskManager implements TaskManager {
 
     private void fillingEpicTimeFields(Epic epic) {
         List<Subtask> epicSubtasks = getSubtasksByID(epic.getId()).stream()
-                .filter(s -> s.getIdEpic() == epic.getId())
                 .filter(s -> s.getDuration() != null)
                 .filter(s -> s.getStartTime() != null)
                 .toList();
