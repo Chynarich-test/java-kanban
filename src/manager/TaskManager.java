@@ -36,7 +36,7 @@ public interface TaskManager {
 
     void deleteTaskAnID(long id);
 
-    ArrayList<Subtask> getSubtasksByID(long id);
+    List<Subtask> getSubtasksByID(long id);
 
     void updateTask(Task task);
 

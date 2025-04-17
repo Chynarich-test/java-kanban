@@ -1,5 +1,7 @@
 package tasks;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Task {
@@ -7,12 +9,23 @@ public class Task {
     private String description;
     private long id;
     private Status status;
+    private Duration duration;
+    private LocalDateTime startTime;
 
     public Task(String name, String description, long id, String status) {
         this.name = name;
         this.description = description;
         this.id = id;
         this.status = Status.valueOf(status);
+    }
+
+    public Task(String name, String description, long id, Status status, Duration duration, LocalDateTime startTime) {
+        this.name = name;
+        this.description = description;
+        this.id = id;
+        this.status = status;
+        this.duration = duration;
+        this.startTime = startTime;
     }
 
     public Task(String name, String description, long id, Status status) {
@@ -27,6 +40,8 @@ public class Task {
         this.description = task.description;
         this.id = task.id;
         this.status = task.status;
+        this.duration = task.duration;
+        this.startTime = task.startTime;
     }
 
     public Task(Task task, long id) {
@@ -34,6 +49,8 @@ public class Task {
         this.description = task.description;
         this.id = id;
         this.status = task.status;
+        this.duration = task.duration;
+        this.startTime = task.startTime;
     }
 
     public Task(String name, String description, Status status) {
@@ -58,14 +75,36 @@ public class Task {
 
     @Override
     public boolean equals(Object o) {
+        if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Task task = (Task) o;
-        return Double.compare(id, task.id) == 0;
+        return id == task.id;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, description, id, status);
+        return Objects.hash(id);
+    }
+
+
+    public Duration getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Duration duration) {
+        this.duration = duration;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public LocalDateTime getEndTime() {
+        return startTime.plus(duration);
     }
 
     public Status getStatus() {

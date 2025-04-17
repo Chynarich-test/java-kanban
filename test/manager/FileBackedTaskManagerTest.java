@@ -1,5 +1,6 @@
 package manager;
 
+import manager.exceptions.FileLoadException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,16 +9,18 @@ import tasks.Task;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class FileBackedTaskManagerTest {
+class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
     private static final String TEST_FILE = "test_tasks.txt";
     private FileBackedTaskManager manager;
 
     @BeforeEach
     void setUp() {
         manager = new FileBackedTaskManager(TEST_FILE);
+        taskManager = new FileBackedTaskManager(TEST_FILE);
     }
 
     @AfterEach
@@ -49,7 +52,7 @@ class FileBackedTaskManagerTest {
         File file = new File("resources/" + TEST_FILE);
         String content = Files.readString(file.toPath());
 
-        assertEquals("id,type,name,status,description,epic\n", content);
+        assertEquals("id,type,name,status,description,duration,startTime,epic\n", content);
     }
 
     @Test
@@ -62,5 +65,30 @@ class FileBackedTaskManagerTest {
         String content = Files.readString(file.toPath());
 
         assertFalse(content.contains("1,TASK,Таск 1,Описание,NEW,"));
+    }
+
+    @Test
+    void loadFromFile_WithNonExistentFile_ThrowsException() {
+        File nonExistentFile = new File("non_existent.txt");
+
+        assertThrows(FileLoadException.class,
+                () -> FileBackedTaskManager.loadFromFile(nonExistentFile),
+                "Загрузка из несуществующего файла должна бросать исключение");
+    }
+
+    @Test
+    void loadFromFile_WithValidFile_DoesNotThrow() throws IOException {
+        // Создаем корректный файл
+        File validFile = File.createTempFile("valid", ".txt");
+        Files.write(validFile.toPath(), List.of(
+                "id,type,name,status,description,duration,startTime,epic",
+                "1,TASK,Задача 2,Описание 2,IN_PROGRESS,PT1H30M,2023-04-02T14:30,"
+        ));
+
+        assertDoesNotThrow(
+                () -> FileBackedTaskManager.loadFromFile(validFile),
+                "Корректный файл не должен вызывать исключений");
+
+        validFile.delete();
     }
 }
