@@ -1,6 +1,7 @@
 package manager;
 
 import manager.exceptions.FileLoadException;
+import manager.exceptions.ManagerSaveException;
 import tasks.Epic;
 import tasks.Status;
 import tasks.Subtask;
@@ -94,7 +95,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 }
             }
         } catch (IOException e) {
-            System.out.println("Ошибка сохранения файла");
+            throw new ManagerSaveException();
         }
     }
 
