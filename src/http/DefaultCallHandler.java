@@ -71,5 +71,5 @@ public abstract class DefaultCallHandler extends BaseHttpHandler implements Http
         return Endpoint.UNKNOWN;
     }
 
-    enum Endpoint {GET_MANY, GET_ONE, POST_ONE, DELETE_ONE, UNKNOWN}
+    enum Endpoint { GET_MANY, GET_ONE, POST_ONE, DELETE_ONE, UNKNOWN }
 }
