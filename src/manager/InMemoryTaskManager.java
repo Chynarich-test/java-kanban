@@ -1,5 +1,6 @@
 package manager;
 
+import manager.exceptions.ConflictWithExistingException;
 import manager.history.HistoryManager;
 import tasks.Epic;
 import tasks.Status;
@@ -23,8 +24,8 @@ public class InMemoryTaskManager implements TaskManager {
     protected long maxID = 0;
 
     @Override
-    public void addTask(Task task) {
-        if (task.getStartTime() != null && hasConflictWithExisting(task)) return;
+    public void addTask(Task task) throws ConflictWithExistingException {
+        if (task.getStartTime() != null && hasConflictWithExisting(task)) throw new ConflictWithExistingException();
 
         long taskID = generateID();
         tasks.put(taskID, new Task(task, taskID));

@@ -1,5 +1,6 @@
 package manager;
 
+import manager.exceptions.ConflictWithExistingException;
 import org.junit.jupiter.api.Test;
 import tasks.Epic;
 import tasks.Status;
@@ -10,6 +11,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public abstract class TaskManagerTest<T extends TaskManager> {
 
@@ -92,7 +94,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void shouldNotCreateTaskWhenFullyInsideAnotherTask() {
+    void shouldThrowExceptionWhenTaskFullyInsideAnotherTask() {
         // Задача не создается, если она полностью внутри другой задачи
         Task task1 = new Task("1", "D", 0, Status.NEW,
                 Duration.ofHours(2), LocalDateTime.of(2024, 1, 1, 10, 0));
@@ -100,10 +102,14 @@ public abstract class TaskManagerTest<T extends TaskManager> {
                 Duration.ofMinutes(30), LocalDateTime.of(2024, 1, 1, 10, 30));
 
         taskManager.addTask(task1);
-        taskManager.addTask(task2);
+
+        assertThrows(ConflictWithExistingException.class, () -> {
+            taskManager.addTask(task2);
+        }, "Должно быть выброшено исключение ConflictWithExistingException при полном вложении");
 
         assertEquals(1, taskManager.getTasks().size(), "Только первая задача должна быть добавлена");
     }
+
 
     @Test
     void shouldNotCreateTaskWhenStartOrEndOverlaps() {
@@ -114,7 +120,9 @@ public abstract class TaskManagerTest<T extends TaskManager> {
                 Duration.ofHours(1), LocalDateTime.of(2024, 1, 1, 10, 30));
 
         taskManager.addTask(task1);
-        taskManager.addTask(task2);
+        assertThrows(ConflictWithExistingException.class, () -> {
+            taskManager.addTask(task2);
+        }, "Должно быть выброшено исключение ConflictWithExistingException при полном вложении");
 
         assertEquals(1, taskManager.getTasks().size(), "Только первая задача должна быть добавлена");
     }
@@ -129,7 +137,9 @@ public abstract class TaskManagerTest<T extends TaskManager> {
                 Duration.ofHours(1), startTime);
 
         taskManager.addTask(task1);
-        taskManager.addTask(task2);
+        assertThrows(ConflictWithExistingException.class, () -> {
+            taskManager.addTask(task2);
+        }, "Должно быть выброшено исключение ConflictWithExistingException при полном вложении");
 
         assertEquals(1, taskManager.getTasks().size(), "Только первая задача должна быть добавлена");
     }
